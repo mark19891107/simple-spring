@@ -1,15 +1,15 @@
 package org.iii.web;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.iii.model.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Handles requests for the application home page.
@@ -17,23 +17,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomeController {
 	
+	private List<Member> members = new ArrayList<Member>();
+	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		logger.info("Welcome home! The client locale is {}.", locale);
-		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		
-		String formattedDate = dateFormat.format(date);
-		
-		model.addAttribute("serverTime", formattedDate );
-		
-		return "home";
+	public HomeController() {
+		members.add(new Member("John", "Lennon"));
+	    members.add(new Member("Paul", "McCartney"));
+	    members.add(new Member("George", "Harrison"));
+	    members.add(new Member("Ringo", "Starr"));
 	}
+	
+	@RequestMapping()
+	public void list(Model model) {
+		model.addAttribute(members);
+	}
+	
+	@RequestMapping()
+	public void member(@RequestParam("id") Integer id, Model model) {
+		model.addAttribute(members.get(id));
+	}
+	
 	
 }
